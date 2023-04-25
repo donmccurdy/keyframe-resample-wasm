@@ -20,6 +20,7 @@
     "build": "microbundle --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
     "watch": "microbundle watch --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
     "test": "ava test/*.ts",
+    "benchmark": "node --loader=ts-node/esm benchmark/benchmark.ts",
     "coverage": "c8 --reporter=lcov --reporter=text ava test/*.ts --tap",
     "coverage:report": "c8 report --reporter=text-lcov > coverage/coverage.lcov",
     "preversion": "yarn dist && yarn test",

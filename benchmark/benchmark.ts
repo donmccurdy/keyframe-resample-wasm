@@ -22,8 +22,7 @@ let dstCount = 0;
 let t0 = performance.now();
 for (const sampler of samplers) {
 	srcCount += sampler.input.length;
-	const result = resample(sampler.input, sampler.output, getInterpolation(sampler));
-	dstCount += result.input.length;
+	dstCount += resample(sampler.input, sampler.output, getInterpolation(sampler));
 }
 let t = performance.now() - t0;
 

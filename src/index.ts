@@ -1,16 +1,6 @@
 /* Types and constants */
 
 export type Interpolation = 'step' | 'lerp' | 'slerp';
-export type TypedArray =
-	| Float32Array
-	| Uint8Array
-	| Uint16Array
-	| Uint32Array
-	| Int8Array
-	| Int16Array
-	| Int32Array;
-export type Result = { count: number; input: TypedArray; output: TypedArray };
-
 type quat = [number, number, number, number];
 
 const EPS = 0.000001;
@@ -18,12 +8,12 @@ const EPS = 0.000001;
 /* Implementation */
 
 export function resample(
-	input: TypedArray,
-	output: TypedArray,
+	input: Float32Array,
+	output: Float32Array,
 	interpolation: Interpolation,
 	tolerance = 1e4,
 	normalized = false
-): Result {
+): number {
 	const elementSize = output.length / input.length;
 	const tmp = new Array<number>(elementSize).fill(0);
 	const value = new Array<number>(elementSize).fill(0);
@@ -86,19 +76,13 @@ export function resample(
 		writeIndex++;
 	}
 
-	// If the sampler was optimized, truncate and save the results. If not, clean up.
-	if (writeIndex !== input.length) {
-		input = input.slice(0, writeIndex);
-		output = output.slice(0, writeIndex * elementSize);
-	}
-
-	return { count: input.length, input, output };
+	return writeIndex;
 }
 
 /* Utilities */
 
 function getElement(
-	array: TypedArray,
+	array: Float32Array,
 	index: number,
 	target: number[],
 	normalized: boolean
@@ -112,7 +96,12 @@ function getElement(
 	return target;
 }
 
-function setElement(array: TypedArray, index: number, value: number[], normalized: boolean): void {
+function setElement(
+	array: Float32Array,
+	index: number,
+	value: number[],
+	normalized: boolean
+): void {
 	if (normalized) {
 		throw new Error('Normalization not supported.');
 	}
