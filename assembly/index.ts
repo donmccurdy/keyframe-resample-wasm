@@ -90,7 +90,7 @@ function getElement(
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
-	for (let i = 0, elementSize = target.length; i < elementSize; i++) {
+	for (let i: u32 = 0, elementSize: u32 = target.length; i < elementSize; i++) {
 		unchecked((target[i] = array[index * elementSize + i]));
 	}
 	return target;
@@ -105,7 +105,7 @@ function setElement(
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
-	for (let i = 0, elementSize = value.length; i < elementSize; i++) {
+	for (let i: u32 = 0, elementSize: u32 = value.length; i < elementSize; i++) {
 		unchecked((array[index * elementSize + i] = value[i]));
 	}
 }
@@ -115,7 +115,7 @@ function eq(a: StaticArray<f32>, b: StaticArray<f32>, tolerance: f32 = 0): boole
 		return false;
 	}
 
-	for (let i = 0; i < a.length; i++) {
+	for (let i: u32 = 0, il: u32 = a.length; i < il; i++) {
 		if (Mathf.abs(unchecked(a[i] - b[i])) > tolerance) {
 			return false;
 		}
@@ -134,7 +134,11 @@ function vlerp(
 	b: StaticArray<f32>,
 	t: f32
 ): StaticArray<f32> {
-	for (let i = 0; i < a.length; i++) out[i] = lerp(unchecked(a[i]), unchecked(b[i]), t);
+	for (let i: u32 = 0, il: u32 = a.length; i < il; i++) {
+		const va = unchecked(a[i]);
+		const vb = unchecked(b[i]);
+		unchecked((out[i] = lerp(va, vb, t)));
+	}
 	return out;
 }
 
