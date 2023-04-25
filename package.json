@@ -1,18 +1,18 @@
 {
-  "name": "my-package",
+  "name": "keyframe-resample",
   "version": "0.0.0",
-  "description": "my-package",
+  "description": "keyframe-resample",
   "type": "module",
   "sideEffects": false,
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
-  "main": "./dist/my-package.cjs",
-  "module": "./dist/my-package.esm.js",
+  "main": "./dist/keyframe-resample.cjs",
+  "module": "./dist/keyframe-resample.esm.js",
   "exports": {
-    "require": "./dist/my-package.cjs",
-    "default": "./dist/my-package.modern.js"
+    "require": "./dist/keyframe-resample.cjs",
+    "default": "./dist/keyframe-resample.modern.js"
   },
-  "repository": "github:donmccurdy/my-package",
+  "repository": "github:donmccurdy/keyframe-resample",
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
   "scripts": {

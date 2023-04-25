@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"paths": {
-			"my-package": ["./"]
+			"keyframe-resample": ["./"]
 		},
 		"moduleResolution": "node",
 		"module": "es2020",

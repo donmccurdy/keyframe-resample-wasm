@@ -20,17 +20,17 @@ const EPS = 0.000001;
 export function resample(
 	input: TypedArray,
 	output: TypedArray,
-	elementSize: number,
 	interpolation: Interpolation,
 	tolerance = 1e4,
 	normalized = false
 ): Result {
-	const lastIndex = input.length - 1;
+	const elementSize = output.length / input.length;
 	const tmp = new Array<number>(elementSize).fill(0);
 	const value = new Array<number>(elementSize).fill(0);
 	const valueNext = new Array<number>(elementSize).fill(0);
 	const valuePrev = new Array<number>(elementSize).fill(0);
 
+	const lastIndex = input.length - 1;
 	let writeIndex = 1;
 
 	for (let i = 1; i < lastIndex; ++i) {

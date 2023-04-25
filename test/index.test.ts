@@ -1,6 +1,6 @@
 import test from 'ava';
-import { myPackage } from 'my-package';
+import { resample } from 'keyframe-resample';
 
-test('my-package', (t) => {
-	t.is(myPackage(), true, 'package exists');
+test('resample', (t) => {
+	t.is(!!resample, true, 'package exists');
 });
