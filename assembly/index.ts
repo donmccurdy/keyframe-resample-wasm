@@ -18,17 +18,17 @@ export function resample(
 	interpolation: Interpolation,
 	tolerance: f32 = 1e4,
 	normalized: boolean = false
-): i32 {
-	const elementSize: i32 = output.length / input.length;
+): u32 {
+	const elementSize: u32 = output.length / input.length;
 	const tmp: f32[] = new Array<f32>(elementSize).fill(0);
 	const value: f32[] = new Array<f32>(elementSize).fill(0);
 	const valueNext: f32[] = new Array<f32>(elementSize).fill(0);
 	const valuePrev: f32[] = new Array<f32>(elementSize).fill(0);
 
-	const lastIndex: i32 = input.length - 1;
-	let writeIndex: i32 = 1;
+	const lastIndex: u32 = input.length - 1;
+	let writeIndex: u32 = 1;
 
-	for (let i: i32 = 1; i < lastIndex; ++i) {
+	for (let i: u32 = 1; i < lastIndex; ++i) {
 		const timePrev: f32 = input[writeIndex - 1];
 		const time: f32 = input[i];
 		const timeNext: f32 = input[i + 1];
@@ -87,7 +87,7 @@ export function resample(
 
 /* Utilities */
 
-function getElement(array: Float32Array, index: i32, target: f32[], normalized: boolean): f32[] {
+function getElement(array: Float32Array, index: u32, target: f32[], normalized: boolean): f32[] {
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
@@ -97,7 +97,7 @@ function getElement(array: Float32Array, index: i32, target: f32[], normalized: 
 	return target;
 }
 
-function setElement(array: Float32Array, index: i32, value: f32[], normalized: boolean): void {
+function setElement(array: Float32Array, index: u32, value: f32[], normalized: boolean): void {
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
