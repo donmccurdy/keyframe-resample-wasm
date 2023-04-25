@@ -1,6 +1,6 @@
 /* Types and constants */
 
-type quat = f32[];
+type quat = StaticArray<f32>;
 
 export enum Interpolation {
 	STEP = 0,
@@ -20,10 +20,10 @@ export function resample(
 	normalized: boolean = false
 ): u32 {
 	const elementSize: u32 = output.length / input.length;
-	const tmp: f32[] = new Array<f32>(elementSize).fill(0);
-	const value: f32[] = new Array<f32>(elementSize).fill(0);
-	const valueNext: f32[] = new Array<f32>(elementSize).fill(0);
-	const valuePrev: f32[] = new Array<f32>(elementSize).fill(0);
+	const tmp = new StaticArray<f32>(elementSize);
+	const value = new StaticArray<f32>(elementSize);
+	const valueNext = new StaticArray<f32>(elementSize);
+	const valuePrev = new StaticArray<f32>(elementSize);
 
 	const lastIndex: u32 = input.length - 1;
 	let writeIndex: u32 = 1;
@@ -44,7 +44,7 @@ export function resample(
 
 			if (interpolation === Interpolation.SLERP) {
 				// Prune keyframes colinear with prev/next keyframes.
-				const sample: f32[] = slerp(tmp as quat, valuePrev as quat, valueNext as quat, t);
+				const sample = slerp(tmp as quat, valuePrev as quat, valueNext as quat, t);
 				const angle: f32 =
 					getAngle(valuePrev as quat, value as quat) +
 					getAngle(value as quat, valueNext as quat);
@@ -87,7 +87,12 @@ export function resample(
 
 /* Utilities */
 
-function getElement(array: Float32Array, index: u32, target: f32[], normalized: boolean): f32[] {
+function getElement(
+	array: Float32Array,
+	index: u32,
+	target: StaticArray<f32>,
+	normalized: boolean
+): StaticArray<f32> {
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
@@ -97,7 +102,12 @@ function getElement(array: Float32Array, index: u32, target: f32[], normalized: 
 	return target;
 }
 
-function setElement(array: Float32Array, index: u32, value: f32[], normalized: boolean): void {
+function setElement(
+	array: Float32Array,
+	index: u32,
+	value: StaticArray<f32>,
+	normalized: boolean
+): void {
 	// if (normalized) {
 	// 	throw new Error('Normalization not supported.');
 	// }
@@ -106,7 +116,7 @@ function setElement(array: Float32Array, index: u32, value: f32[], normalized: b
 	}
 }
 
-function eq(a: f32[], b: f32[], tolerance: f32 = 0): boolean {
+function eq(a: StaticArray<f32>, b: StaticArray<f32>, tolerance: f32 = 0): boolean {
 	if (a.length !== b.length) {
 		return false;
 	}
@@ -124,7 +134,12 @@ function lerp(v0: f32, v1: f32, t: f32): f32 {
 	return v0 * (1 - t) + v1 * t;
 }
 
-function vlerp(out: f32[], a: f32[], b: f32[], t: f32): f32[] {
+function vlerp(
+	out: StaticArray<f32>,
+	a: StaticArray<f32>,
+	b: StaticArray<f32>,
+	t: f32
+): StaticArray<f32> {
 	for (let i = 0; i < a.length; i++) out[i] = lerp(a[i], b[i], t);
 	return out;
 }
