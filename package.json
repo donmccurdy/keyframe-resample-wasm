@@ -1,0 +1,62 @@
+{
+  "name": "my-package",
+  "version": "0.0.0",
+  "description": "my-package",
+  "type": "module",
+  "sideEffects": false,
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/my-package.cjs",
+  "module": "./dist/my-package.esm.js",
+  "exports": {
+    "require": "./dist/my-package.cjs",
+    "default": "./dist/my-package.modern.js"
+  },
+  "repository": "github:donmccurdy/my-package",
+  "author": "Don McCurdy <dm@donmccurdy.com>",
+  "license": "MIT",
+  "scripts": {
+    "dist": "microbundle --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
+    "watch": "microbundle watch --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
+    "test": "ava test/*.ts",
+    "coverage": "c8 --reporter=lcov --reporter=text ava test/*.ts --tap",
+    "coverage:report": "c8 report --reporter=text-lcov > coverage/coverage.lcov",
+    "preversion": "yarn dist && yarn test",
+    "version": "rimraf dist/* && yarn dist && git add -u",
+    "postversion": "git push && git push --tags && npm publish && yarn coverage:report"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "5.59.0",
+    "ava": "5.2.0",
+    "eslint": "8.39.0",
+    "eslint-config-prettier": "8.8.0",
+    "microbundle": "0.15.1",
+    "prettier": "2.8.8",
+    "rimraf": "5.0.0",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.4"
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "node >= 14"
+  ],
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm"
+    ]
+  },
+  "dependencies": {
+    "c8": "^7.11.3"
+  }
+}
