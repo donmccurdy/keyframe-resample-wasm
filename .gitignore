@@ -6,3 +6,7 @@ dist
 
 # Coverage
 coverage
+
+# Data
+data/*
+!data/.gitkeep
