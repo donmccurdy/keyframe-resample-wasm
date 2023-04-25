@@ -16,7 +16,8 @@
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
   "scripts": {
-    "dist": "microbundle --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
+    "dist": "yarn build && yarn asbuild",
+    "build": "microbundle --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
     "watch": "microbundle watch --format cjs,esm,modern --no-compress --define PACKAGE_VERSION=$npm_package_version",
     "test": "ava test/*.ts",
     "coverage": "c8 --reporter=lcov --reporter=text ava test/*.ts --tap",
