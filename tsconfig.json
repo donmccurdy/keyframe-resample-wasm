@@ -4,9 +4,9 @@
 			"keyframe-resample": ["./"]
 		},
 		"moduleResolution": "node",
-		"module": "es2020",
-		"lib": ["es2020"],
-		"target": "es2020",
+		"module": "ESNext",
+		"lib": ["ESNext"],
+		"target": "ESNext",
 		"declaration": true,
 		"typeRoots": ["node_modules/@types"],
 		"strict": true

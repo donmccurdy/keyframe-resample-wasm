@@ -1,6 +1,14 @@
 import { readFile } from 'node:fs/promises';
 import { resample } from 'keyframe-resample';
 import { resample as resampleWASM, Interpolation } from './build/release.js';
+import { performance } from 'node:perf_hooks';
+
+interface Sampler {
+	input: number[];
+	output: number[];
+	interpolation: 'CUBICSPLINE' | 'LINEAR' | 'STEP';
+	path: string;
+}
 
 const samplers = JSON.parse(await readFile('./data/arm_keyframes.json', { encoding: 'utf-8' }));
 let srcCount = 0;
@@ -47,7 +55,7 @@ console.log(
  * Utilities
  */
 
-function getInterpolation(sampler) {
+function getInterpolation(sampler: Sampler) {
 	if (sampler.interpolation === 'LINEAR') {
 		return sampler.path === 'rotation' ? 'slerp' : 'lerp';
 	} else if (sampler.interpolation === 'STEP') {
@@ -57,7 +65,7 @@ function getInterpolation(sampler) {
 	}
 }
 
-function getInterpolationWASM(sampler) {
+function getInterpolationWASM(sampler: Sampler) {
 	if (sampler.interpolation === 'LINEAR') {
 		return sampler.path === 'rotation' ? Interpolation.SLERP : Interpolation.LERP;
 	} else if (sampler.interpolation === 'STEP') {
@@ -67,10 +75,10 @@ function getInterpolationWASM(sampler) {
 	}
 }
 
-function formatLong(x) {
+function formatLong(x: number): string {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-export function dim(str) {
+export function dim(str: string) {
 	return `\x1b[2m${str}\x1b[0m`;
 }
