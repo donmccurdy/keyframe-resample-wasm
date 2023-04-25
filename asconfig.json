@@ -11,12 +11,14 @@
       "textFile": "build/release.wat",
       "sourceMap": true,
       "optimizeLevel": 3,
-      "shrinkLevel": 0,
+      "shrinkLevel": 1,
       "converge": false,
       "noAssert": false
     }
   },
   "options": {
-    "bindings": "esm"
+    "bindings": "esm",
+    "runtime": "minimal",
+    "exportRuntime": true
   }
 }

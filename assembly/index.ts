@@ -13,8 +13,8 @@ const EPS = 0.000001;
 /* Implementation */
 
 export function resample(
-	input: Float32Array,
-	output: Float32Array,
+	input: StaticArray<f32>,
+	output: StaticArray<f32>,
 	interpolation: Interpolation,
 	tolerance: f32 = 1e4,
 	normalized: boolean = false
@@ -29,15 +29,15 @@ export function resample(
 	let writeIndex: u32 = 1;
 
 	for (let i: u32 = 1; i < lastIndex; ++i) {
-		const timePrev: f32 = input[writeIndex - 1];
-		const time: f32 = input[i];
-		const timeNext: f32 = input[i + 1];
+		const timePrev: f32 = unchecked(input[writeIndex - 1]);
+		const time: f32 = unchecked(input[i]);
+		const timeNext: f32 = unchecked(input[i + 1]);
 		const t: f32 = (time - timePrev) / (timeNext - timePrev);
 
 		let keep = false;
 
 		// Remove unnecessary adjacent keyframes.
-		if (time !== timeNext && (i !== 1 || time !== input[0])) {
+		if (time !== timeNext && (i !== 1 || time !== unchecked(input[0]))) {
 			getElement(output, writeIndex - 1, valuePrev, normalized);
 			getElement(output, i, value, normalized);
 			getElement(output, i + 1, valueNext, normalized);
@@ -62,7 +62,7 @@ export function resample(
 		// In-place compaction.
 		if (keep) {
 			if (i !== writeIndex) {
-				input[writeIndex] = input[i];
+				unchecked((input[writeIndex] = input[i]));
 				setElement(output, writeIndex, getElement(output, i, tmp, normalized), normalized);
 			}
 			writeIndex++;
@@ -71,16 +71,10 @@ export function resample(
 
 	// Flush last keyframe (compaction looks ahead).
 	if (lastIndex > 0) {
-		input[writeIndex] = input[lastIndex];
+		unchecked((input[writeIndex] = input[lastIndex]));
 		setElement(output, writeIndex, getElement(output, lastIndex, tmp, normalized), normalized);
 		writeIndex++;
 	}
-
-	// If the sampler was optimized, truncate and save the results. If not, clean up.
-	// if (writeIndex !== input.length) {
-	// 	input = input.slice(0, writeIndex);
-	// 	output = output.slice(0, writeIndex * elementSize);
-	// }
 
 	return writeIndex;
 }
@@ -88,7 +82,7 @@ export function resample(
 /* Utilities */
 
 function getElement(
-	array: Float32Array,
+	array: StaticArray<f32>,
 	index: u32,
 	target: StaticArray<f32>,
 	normalized: boolean
@@ -97,13 +91,13 @@ function getElement(
 	// 	throw new Error('Normalization not supported.');
 	// }
 	for (let i = 0, elementSize = target.length; i < elementSize; i++) {
-		target[i] = array[index * elementSize + i];
+		unchecked((target[i] = array[index * elementSize + i]));
 	}
 	return target;
 }
 
 function setElement(
-	array: Float32Array,
+	array: StaticArray<f32>,
 	index: u32,
 	value: StaticArray<f32>,
 	normalized: boolean
@@ -112,7 +106,7 @@ function setElement(
 	// 	throw new Error('Normalization not supported.');
 	// }
 	for (let i = 0, elementSize = value.length; i < elementSize; i++) {
-		array[index * elementSize + i] = value[i];
+		unchecked((array[index * elementSize + i] = value[i]));
 	}
 }
 
@@ -122,7 +116,7 @@ function eq(a: StaticArray<f32>, b: StaticArray<f32>, tolerance: f32 = 0): boole
 	}
 
 	for (let i = 0; i < a.length; i++) {
-		if (Mathf.abs(a[i] - b[i]) > tolerance) {
+		if (Mathf.abs(unchecked(a[i] - b[i])) > tolerance) {
 			return false;
 		}
 	}
@@ -140,7 +134,7 @@ function vlerp(
 	b: StaticArray<f32>,
 	t: f32
 ): StaticArray<f32> {
-	for (let i = 0; i < a.length; i++) out[i] = lerp(a[i], b[i], t);
+	for (let i = 0; i < a.length; i++) out[i] = lerp(unchecked(a[i]), unchecked(b[i]), t);
 	return out;
 }
 
@@ -148,14 +142,14 @@ function vlerp(
 function slerp(out: quat, a: quat, b: quat, t: f32): quat {
 	// benchmarks:
 	//    http://jsperf.com/quaternion-slerp-implementations
-	let ax: f32 = a[0],
-		ay: f32 = a[1],
-		az: f32 = a[2],
-		aw: f32 = a[3];
-	let bx: f32 = b[0],
-		by: f32 = b[1],
-		bz: f32 = b[2],
-		bw: f32 = b[3];
+	let ax: f32 = unchecked(a[0]),
+		ay: f32 = unchecked(a[1]),
+		az: f32 = unchecked(a[2]),
+		aw: f32 = unchecked(a[3]);
+	let bx: f32 = unchecked(b[0]),
+		by: f32 = unchecked(b[1]),
+		bz: f32 = unchecked(b[2]),
+		bw: f32 = unchecked(b[3]);
 
 	let omega: f32, cosom: f32, sinom: f32, scale0: f32, scale1: f32;
 
@@ -183,10 +177,10 @@ function slerp(out: quat, a: quat, b: quat, t: f32): quat {
 		scale1 = t;
 	}
 	// calculate final values
-	out[0] = scale0 * ax + scale1 * bx;
-	out[1] = scale0 * ay + scale1 * by;
-	out[2] = scale0 * az + scale1 * bz;
-	out[3] = scale0 * aw + scale1 * bw;
+	unchecked((out[0] = scale0 * ax + scale1 * bx));
+	unchecked((out[1] = scale0 * ay + scale1 * by));
+	unchecked((out[2] = scale0 * az + scale1 * bz));
+	unchecked((out[3] = scale0 * aw + scale1 * bw));
 
 	return out;
 }
@@ -197,5 +191,10 @@ function getAngle(a: quat, b: quat): f32 {
 }
 
 function dot(a: quat, b: quat): f32 {
-	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+	return (
+		unchecked(a[0] * b[0]) +
+		unchecked(a[1] * b[1]) +
+		unchecked(a[2] * b[2]) +
+		unchecked(a[3] * b[3])
+	);
 }

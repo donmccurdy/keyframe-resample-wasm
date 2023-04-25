@@ -41,6 +41,8 @@ console.log(
 		dim(`(${formatLong(srcCount)} → ${formatLong(dstCount)} keyframes)`)
 );
 
+// console.log(resampleWASM.__collect);
+
 /******************************************************************************
  * Utilities
  */
