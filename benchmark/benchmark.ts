@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { resample } from 'keyframe-resample';
-import { resample as resampleWASM, Interpolation } from './build/release.js';
+import { resample as resampleWASM, Interpolation } from '../build/release.js';
 import { performance } from 'node:perf_hooks';
 
 interface Sampler {
@@ -10,7 +10,8 @@ interface Sampler {
 	path: string;
 }
 
-const samplers = JSON.parse(await readFile('./data/arm_keyframes.json', { encoding: 'utf-8' }));
+const samplersPath = new URL('../data/arm_keyframes.json', import.meta.url);
+const samplers = JSON.parse(await readFile(samplersPath, { encoding: 'utf-8' }));
 let srcCount = 0;
 let dstCount = 0;
 

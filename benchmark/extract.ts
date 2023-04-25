@@ -7,7 +7,7 @@ import { writeFile } from 'node:fs/promises';
  */
 
 const io = new NodeIO();
-const document = await io.read('./Arm.glb');
+const document = await io.read('../data/Arm.glb');
 
 const results = [];
 
@@ -28,4 +28,6 @@ for (const animation of document.getRoot().listAnimations()) {
 	}
 }
 
-await writeFile('./arm_keyframes.json', JSON.stringify(results, null, 2), { encoding: 'utf-8' });
+await writeFile('../data/arm_keyframes.json', JSON.stringify(results, null, 2), {
+	encoding: 'utf-8',
+});
