@@ -1,6 +1,11 @@
 /* Types and constants */
 
-export type Interpolation = 'step' | 'lerp' | 'slerp';
+export enum Interpolation {
+	STEP = 0,
+	LERP = 1,
+	SLERP = 2,
+}
+
 type quat = [number, number, number, number];
 
 const EPS = 0.000001;
@@ -37,7 +42,7 @@ export function resample(
 			getElement(output, i, value, normalized);
 			getElement(output, i + 1, valueNext, normalized);
 
-			if (interpolation === 'slerp') {
+			if (interpolation === Interpolation.SLERP) {
 				// Prune keyframes colinear with prev/next keyframes.
 				const sample = slerp(
 					tmp as quat,
@@ -49,11 +54,11 @@ export function resample(
 					getAngle(valuePrev as quat, value as quat) +
 					getAngle(value as quat, valueNext as quat);
 				keep = !eq(value, sample, tolerance) || angle + Number.EPSILON >= Math.PI;
-			} else if (interpolation === 'lerp') {
+			} else if (interpolation === Interpolation.LERP) {
 				// Prune keyframes colinear with prev/next keyframes.
 				const sample = vlerp(tmp, valuePrev, valueNext, t);
 				keep = !eq(value, sample, tolerance);
-			} else if (interpolation === 'step') {
+			} else if (interpolation === Interpolation.STEP) {
 				// Prune keyframes identical to prev/next keyframes.
 				keep = !eq(value, valuePrev) || !eq(value, valueNext);
 			}
