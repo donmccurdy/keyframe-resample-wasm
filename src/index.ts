@@ -87,9 +87,9 @@ function getElement(
 	target: number[],
 	normalized: boolean
 ): number[] {
-	if (normalized) {
-		throw new Error('Normalization not supported.');
-	}
+	// if (normalized) {
+	// 	throw new Error('Normalization not supported.');
+	// }
 	for (let i = 0, elementSize = target.length; i < elementSize; i++) {
 		target[i] = array[index * elementSize + i];
 	}
@@ -102,9 +102,9 @@ function setElement(
 	value: number[],
 	normalized: boolean
 ): void {
-	if (normalized) {
-		throw new Error('Normalization not supported.');
-	}
+	// if (normalized) {
+	// 	throw new Error('Normalization not supported.');
+	// }
 	for (let i = 0, elementSize = value.length; i < elementSize; i++) {
 		array[index * elementSize + i] = value[i];
 	}
