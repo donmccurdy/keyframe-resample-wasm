@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { resample } from 'keyframe-resample';
-import { resample as resampleWASM, Interpolation } from '../build/release.js';
+import { resample, resampleWASM, Interpolation } from 'keyframe-resample';
 import { performance } from 'node:perf_hooks';
 
 /******************************************************************************
