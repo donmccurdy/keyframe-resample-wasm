@@ -15,5 +15,4 @@ AssemblyScript / WASM findings:
 - Use unchecked array read/write
 - Any size optimization can have a performance cost, measure it
 - Default bindings are not npm-ready, may need to hand-write
-- Default bindings do not lower Float32Array → StaticArray optimally
 - Incremental GC has some overhead, measure it
