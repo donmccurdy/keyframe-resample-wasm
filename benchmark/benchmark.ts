@@ -3,6 +3,12 @@ import { resample } from 'keyframe-resample';
 import { resample as resampleWASM, Interpolation } from '../build/release.js';
 import { performance } from 'node:perf_hooks';
 
+/******************************************************************************
+ * Setup
+ */
+
+const INPUT_PATH = new URL('../data/arm_keyframes.json', import.meta.url);
+
 const BYTES_PER_MB = 1024 * 1024;
 const MS_PER_S = 1000;
 
@@ -13,55 +19,38 @@ interface Sampler {
 	path: string;
 }
 
-const samplersPath = new URL('../data/arm_keyframes.json', import.meta.url);
-const samplers = JSON.parse(await readFile(samplersPath, { encoding: 'utf-8' }));
-let srcCount = 0;
-let dstCount = 0;
-let byteLength = 0;
-
-for (const sampler of samplers) {
-	byteLength += sampler.input.length * 4 + sampler.output.length * 4;
-}
-
-console.log(`-----------\nBenchmark`);
-console.log(`  ${formatLong(samplers.length)} samplers`);
-console.log(`  ${formatLong(Math.round(byteLength))} bytes`);
-
 /******************************************************************************
- * JavaScript
+ * Benchmark
  */
 
-let t0 = performance.now();
-for (const sampler of samplers) {
-	srcCount += sampler.input.length;
-	dstCount += resample(sampler.input, sampler.output, getInterpolation(sampler));
+async function run(label: string, resample: Function) {
+	const samplers = JSON.parse(await readFile(INPUT_PATH, { encoding: 'utf-8' }));
+
+	let srcCount = 0;
+	let dstCount = 0;
+	let byteLength = 0;
+
+	for (const sampler of samplers) {
+		// TODO(test): Confirm these are Float32Array in WASM memory.
+		byteLength += sampler.input.length * 4 + sampler.output.length * 4;
+	}
+
+	let t0 = performance.now();
+	for (const sampler of samplers) {
+		srcCount += sampler.input.length;
+		dstCount += resample(sampler.input, sampler.output, getInterpolation(sampler));
+	}
+	let t = performance.now() - t0;
+
+	console.log(label);
+	console.log(dim(`  ${formatLong(Math.round(t))}ms`));
+	console.log(dim(`  ${Math.round(byteLength / BYTES_PER_MB / (t / MS_PER_S))} MB/s`));
+	console.log(dim(`  ${formatLong(srcCount)} → ${formatLong(dstCount)} keyframes`));
+	console.log('\n');
 }
-let t = performance.now() - t0;
 
-console.log(`JavaScript`);
-console.log(dim(`  ${formatLong(Math.round(t))}ms`));
-console.log(dim(`  ${Math.round(byteLength / BYTES_PER_MB / (t / MS_PER_S))} MB/s`));
-console.log(dim(`  ${formatLong(srcCount)} → ${formatLong(dstCount)} keyframes`));
-
-/******************************************************************************
- * WebAssembly
- */
-
-srcCount = dstCount = 0;
-
-t0 = performance.now();
-for (const sampler of samplers) {
-	srcCount += sampler.input.length;
-	dstCount += resampleWASM(sampler.input, sampler.output, getInterpolation(sampler));
-}
-t = performance.now() - t0;
-
-console.log(`WASM`);
-console.log(dim(`  ${formatLong(Math.round(t))}ms`));
-console.log(dim(`  ${Math.round(byteLength / BYTES_PER_MB / (t / MS_PER_S))} MB/s`));
-console.log(dim(`  ${formatLong(srcCount)} → ${formatLong(dstCount)} keyframes`));
-
-// console.log(resampleWASM.__collect);
+await run('\nJavaScript', resample);
+await run('WASM', resampleWASM);
 
 /******************************************************************************
  * Utilities
