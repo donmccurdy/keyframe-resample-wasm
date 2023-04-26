@@ -30,8 +30,9 @@ async function run(label: string, resample: Function) {
 	let byteLength = 0;
 
 	for (const sampler of samplers) {
-		// TODO(test): Confirm these are Float32Array in WASM memory.
-		byteLength += sampler.input.length * 4 + sampler.output.length * 4;
+		sampler.input = new Float32Array(sampler.input);
+		sampler.output = new Float32Array(sampler.output);
+		byteLength += sampler.input.byteLength + sampler.output.byteLength;
 	}
 
 	let t0 = performance.now();
