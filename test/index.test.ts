@@ -1,6 +1,5 @@
 import test from 'ava';
-import { resample } from 'keyframe-resample';
-import { resample as resampleWASM } from '../build/debug.js';
+import { resample, resampleWASM } from 'keyframe-resample';
 
 test('resample', (t) => {
 	t.is(!!resample, true, 'js build exists');
