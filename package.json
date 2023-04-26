@@ -6,29 +6,31 @@
   "sideEffects": false,
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
-  "main": "./dist/keyframe-resample.cjs",
-  "module": "./dist/keyframe-resample.esm.js",
+  "main": "./dist/keyframe-resample-node.cjs",
+  "module": "./dist/keyframe-resample-node.esm.js",
   "exports": {
-    "require": "./dist/keyframe-resample.cjs",
-    "default": "./dist/keyframe-resample.modern.js"
+    "require": "./dist/keyframe-resample-node.cjs",
+    "default": "./dist/keyframe-resample-node.modern.js"
   },
   "repository": "github:donmccurdy/keyframe-resample-wasm",
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
   "scripts": {
     "dist": "yarn asbuild && yarn build",
-    "build": "microbundle --format modern --no-compress --define PACKAGE_VERSION=$npm_package_version --external node:fs/promises",
-    "watch": "microbundle watch --format modern --no-compress --define PACKAGE_VERSION=$npm_package_version --external node:fs/promises",
+    "build": "yarn build:node && yarn build:browser",
+    "build:node": "microbundle build --raw --no-compress --target node --format modern,cjs src/index.ts --output dist/keyframe-resample-node.js --external node:fs/promises",
+    "build:browser": "microbundle build --raw --no-compress --target web --format modern,cjs src/index.ts --output dist/keyframe-resample-browser.js --alias resample_wasm.ts=./resample_wasm.bundler.ts",
+    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
+    "asbuild:debug": "asc assembly/index.ts --target debug",
+    "asbuild:release": "asc assembly/index.ts --target release",
+    "clean": "rimraf dist/*",
     "test": "ava test/*.ts",
     "benchmark": "node --loader=ts-node/esm benchmark/benchmark.ts",
     "coverage": "c8 --reporter=lcov --reporter=text ava test/*.ts --tap",
     "coverage:report": "c8 report --reporter=text-lcov > coverage/coverage.lcov",
     "preversion": "yarn dist && yarn test",
     "version": "rimraf dist/* && yarn dist && git add -u",
-    "postversion": "git push && git push --tags && npm publish && yarn coverage:report",
-    "asbuild:debug": "asc assembly/index.ts --target debug",
-    "asbuild:release": "asc assembly/index.ts --target release",
-    "asbuild": "npm run asbuild:debug && npm run asbuild:release"
+    "postversion": "git push && git push --tags && npm publish && yarn coverage:report"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.59.0",
