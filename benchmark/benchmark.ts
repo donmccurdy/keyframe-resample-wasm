@@ -52,7 +52,7 @@ srcCount = dstCount = 0;
 t0 = performance.now();
 for (const sampler of samplers) {
 	srcCount += sampler.input.length;
-	dstCount += resampleWASM(sampler.input, sampler.output, getInterpolationWASM(sampler));
+	dstCount += resampleWASM(sampler.input, sampler.output, getInterpolation(sampler));
 }
 t = performance.now() - t0;
 
@@ -67,17 +67,7 @@ console.log(dim(`  ${formatLong(srcCount)} → ${formatLong(dstCount)} keyframes
  * Utilities
  */
 
-function getInterpolation(sampler: Sampler) {
-	if (sampler.interpolation === 'LINEAR') {
-		return sampler.path === 'rotation' ? 'slerp' : 'lerp';
-	} else if (sampler.interpolation === 'STEP') {
-		return 'step';
-	} else {
-		throw new Error(`Unexpected interpolation, ${sampler.interpolation}`);
-	}
-}
-
-function getInterpolationWASM(sampler: Sampler) {
+function getInterpolation(sampler: Sampler): any {
 	if (sampler.interpolation === 'LINEAR') {
 		return sampler.path === 'rotation' ? Interpolation.SLERP : Interpolation.LERP;
 	} else if (sampler.interpolation === 'STEP') {
