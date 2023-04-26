@@ -1,5 +1,6 @@
 /* Types and constants */
 
+// TODO(design): Consider tuples.
 type quat = StaticArray<f32>;
 
 export enum Interpolation {
