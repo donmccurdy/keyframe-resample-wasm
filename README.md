@@ -8,10 +8,6 @@ To do:
 
 - [ ] Support fixed-memory or GC.
 - [ ] Include CJS, ESM, and Modern builds. (refer to mikktspace output)
-- [ ] Rename as 'keyframe-resample-wasm' / 'keyframe-resample'
-- [ ] Files: release_bindings.ts, release_wasm.ts
-- [ ] Move build/ outputs to dist/
-- [ ] Write custom bindings
 
 AssemblyScript / WASM findings:
 

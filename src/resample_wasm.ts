@@ -1,12 +1,5 @@
-import { resample } from '../build/release.js';
-import { Interpolation } from './constants.js';
+import { readFile } from 'node:fs/promises';
 
-export function resampleWASM(
-	input: Float32Array,
-	output: Float32Array,
-	interpolation: Interpolation,
-	tolerance = 1e4,
-	normalized = false
-): number {
-	return resample(input, output, interpolation, tolerance, normalized);
-}
+const wasmURL = new URL('./release.wasm', import.meta.url);
+const wasm = readFile(wasmURL);
+export default wasm;
