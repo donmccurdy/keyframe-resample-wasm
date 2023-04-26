@@ -33,9 +33,8 @@ let exports: InstanceExports;
 
 export const ready = new Promise<void>(async (resolve, reject) => {
 	try {
-		const buffer = await wasm;
-		const module = await WebAssembly.compile(buffer);
-		exports = await instantiate(module as any, {});
+		const module = await WebAssembly.compile(await wasm);
+		exports = await instantiate(module as BufferSource, {});
 		resolve();
 	} catch (e) {
 		reject(e);
@@ -43,7 +42,6 @@ export const ready = new Promise<void>(async (resolve, reject) => {
 });
 
 async function instantiate(module: BufferSource, imports = {}): Promise<InstanceExports> {
-	console.log({ module });
 	const instance = (await WebAssembly.instantiate(module, {
 		env: Object.assign(Object.create(globalThis), {}, { abort: __abort }),
 	})) as unknown as Instance;
