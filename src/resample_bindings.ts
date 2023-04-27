@@ -62,6 +62,8 @@ export function resampleWASM(
 	if (!exports) throw new Error('Module not initialized; await the "ready" export.');
 	if (!(input instanceof Float32Array)) throw new Error('Missing Float32Array input.');
 	if (!(output instanceof Float32Array)) throw new Error('Missing Float32Array output.');
+	const outputSize = output.length / input.length;
+	if (!Number.isInteger(outputSize)) throw new Error('Invalid input/output counts.');
 	if (!Number.isFinite(interpolation)) throw new Error('Invalid interpolation.');
 	if (!Number.isFinite(tolerance)) throw new Error('Invalid tolerance.');
 
@@ -71,14 +73,11 @@ export function resampleWASM(
 
 	try {
 		exports.__setArgumentsLength(arguments.length);
-		const count = exports.resample(
-			inputPtr,
-			outputPtr,
-			interpolation,
-			tolerance,
-			normalizedVal
-		);
-		return count >>> 0;
+		const count =
+			exports.resample(inputPtr, outputPtr, interpolation, tolerance, normalizedVal) >>> 0;
+		__liftStaticArray(inputPtr, input, count);
+		__liftStaticArray(outputPtr, output, count * outputSize);
+		return count;
 	} finally {
 		__release(inputPtr);
 		__release(outputPtr);
@@ -100,11 +99,11 @@ function __release(ptr: number): number {
 	return ptr;
 }
 
-function __liftString(pointer: number) {
-	if (!pointer) return null;
-	const end = (pointer + new Uint32Array(exports.memory.buffer)[(pointer - 4) >>> 2]) >>> 1,
+function __liftString(ptr: number) {
+	if (!ptr) return null;
+	const end = (ptr + new Uint32Array(exports.memory.buffer)[(ptr - 4) >>> 2]) >>> 1,
 		memoryU16 = new Uint16Array(exports.memory.buffer);
-	let start = pointer >>> 1,
+	let start = ptr >>> 1,
 		string = '';
 	while (end - start > 1024)
 		string += String.fromCharCode(...memoryU16.subarray(start, (start += 1024)));
@@ -112,10 +111,14 @@ function __liftString(pointer: number) {
 }
 
 function __lowerStaticArray(values: Float32Array, id: number, align: number) {
-	const buffer = exports.__pin(exports.__new(values.length << align, id)) >>> 0;
-	new Float32Array(exports.memory.buffer, buffer, values.length).set(values);
-	exports.__unpin(buffer);
-	return buffer;
+	const ptr = exports.__pin(exports.__new(values.length << align, id)) >>> 0;
+	new Float32Array(exports.memory.buffer, ptr, values.length).set(values);
+	exports.__unpin(ptr);
+	return ptr;
+}
+
+function __liftStaticArray(ptr: number, values: Float32Array, count: number) {
+	values.set(new Float32Array(exports.memory.buffer, ptr, count));
 }
 
 function __abort(

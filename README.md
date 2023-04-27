@@ -7,7 +7,6 @@ Resamples and optimizes keyframe data using WebAssembly.
 To do:
 
 - [ ] Support fixed-memory or GC
-- [ ] Write results back to array
 - [ ] Consider string enums in public API
 
 AssemblyScript / WASM findings:
@@ -40,7 +39,7 @@ const srcValues = new Float32Array([
     0, 0, 5,
 ]);
 
-const count = resample(times, values, Interpolation.LERP);
+const count = resample(srcTimes, srcValues, Interpolation.LERP);
 
 const dstTimes = srcTimes.slice(0, count); // → [0, 0.4]
 const dstValues = srcValues.slice(0, count * 3); // → [0, 0, 1, 0, 0, 5]
