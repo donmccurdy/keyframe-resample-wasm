@@ -1,4 +1,4 @@
-import wasm from './resample_wasm.js';
+import wasm from './resample_wasm.env.js';
 import { Interpolation } from './constants.js';
 
 ///////////////////////////////////////////////////////////////////////////////

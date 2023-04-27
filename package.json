@@ -25,8 +25,8 @@
   "scripts": {
     "dist": "yarn asbuild && yarn build",
     "build": "yarn build:node && yarn build:browser",
-    "build:node": "microbundle build --raw --no-compress --target node --format modern,cjs src/index.ts --output dist/keyframe-resample-node.js --external node:fs/promises",
-    "build:browser": "microbundle build --raw --no-compress --target web --format modern,cjs src/index.ts --output dist/keyframe-resample-browser.js --external ./release.wasm --alias ./resample_wasm.js=./resample_wasm.bundler.js",
+    "build:node": "microbundle build --raw --no-compress --target node --format modern,cjs --output dist/keyframe-resample-node.js --external node:fs/promises --alias ./resample_wasm.env.js=./resample_wasm.node.js",
+    "build:browser": "microbundle build --raw --no-compress --target web --format modern,cjs --output dist/keyframe-resample-browser.js --external ./release.wasm --alias ./resample_wasm.env.js=./resample_wasm.browser.js",
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "asbuild:release": "asc assembly/index.ts --target release",

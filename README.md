@@ -7,7 +7,6 @@ Resamples and optimizes keyframe data using WebAssembly.
 To do:
 
 - [ ] Support fixed-memory or GC
-- [ ] Include CJS, ESM, and Modern builds. (refer to mikktspace output)
 - [ ] Write results back to array
 - [ ] Consider string enums in public API
 
