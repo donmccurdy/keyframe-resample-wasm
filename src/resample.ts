@@ -34,7 +34,7 @@ export function resample(
 			getElement(output, i, value, normalized);
 			getElement(output, i + 1, valueNext, normalized);
 
-			if (interpolation === Interpolation.SLERP) {
+			if (interpolation === 'slerp') {
 				// Prune keyframes colinear with prev/next keyframes.
 				const sample = slerp(
 					tmp as quat,
@@ -46,11 +46,11 @@ export function resample(
 					getAngle(valuePrev as quat, value as quat) +
 					getAngle(value as quat, valueNext as quat);
 				keep = !eq(value, sample, tolerance) || angle + Number.EPSILON >= Math.PI;
-			} else if (interpolation === Interpolation.LERP) {
+			} else if (interpolation === 'lerp') {
 				// Prune keyframes colinear with prev/next keyframes.
 				const sample = vlerp(tmp, valuePrev, valueNext, t);
 				keep = !eq(value, sample, tolerance);
-			} else if (interpolation === Interpolation.STEP) {
+			} else if (interpolation === 'step') {
 				// Prune keyframes identical to prev/next keyframes.
 				keep = !eq(value, valuePrev) || !eq(value, valueNext);
 			}

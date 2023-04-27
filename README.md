@@ -7,7 +7,6 @@ Resamples and optimizes keyframe data using WebAssembly.
 To do:
 
 - [ ] Support fixed-memory or GC
-- [ ] Consider string enums in public API
 
 AssemblyScript / WASM findings:
 
@@ -39,7 +38,7 @@ const srcValues = new Float32Array([
     0, 0, 5,
 ]);
 
-const count = resample(srcTimes, srcValues, Interpolation.LERP);
+const count = resample(srcTimes, srcValues, 'lerp');
 
 const dstTimes = srcTimes.slice(0, count); // → [0, 0.4]
 const dstValues = srcValues.slice(0, count * 3); // → [0, 0, 1, 0, 0, 5]
@@ -47,11 +46,11 @@ const dstValues = srcValues.slice(0, count * 3); // → [0, 0, 1, 0, 0, 5]
 
 Supported interpolation modes:
 
-| mode  | description |
-|-------|-------------|
-| STEP  |             |
-| LERP  |             |
-| SLERP |             |
+| mode      | description                                                 |
+|-----------|-------------------------------------------------------------|
+| `'step'`  | Step (also called discrete or constant) interpolation.      |
+| `'lerp'`  | Linear, per-component interpolation.                        |
+| `'slerp'` | Spherical linear interpolation, valid only for quaternions. |
 
 ## Contributing
 

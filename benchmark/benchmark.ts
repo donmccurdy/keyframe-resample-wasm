@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { resample, resampleWASM, Interpolation } from 'keyframe-resample';
+import { resample, resampleWASM } from 'keyframe-resample';
 import { performance } from 'node:perf_hooks';
 
 /******************************************************************************
@@ -58,9 +58,9 @@ await run('WASM', resampleWASM);
 
 function getInterpolation(sampler: Sampler): any {
 	if (sampler.interpolation === 'LINEAR') {
-		return sampler.path === 'rotation' ? Interpolation.SLERP : Interpolation.LERP;
+		return sampler.path === 'rotation' ? 'slerp' : 'lerp';
 	} else if (sampler.interpolation === 'STEP') {
-		return Interpolation.STEP;
+		return 'step';
 	} else {
 		throw new Error(`Unexpected interpolation, ${sampler.interpolation}`);
 	}

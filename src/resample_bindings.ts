@@ -1,5 +1,5 @@
 import wasm from './resample_wasm.env.js';
-import { Interpolation } from './constants.js';
+import { Interpolation, TO_INTERPOLATION_INTERNAL } from './constants.js';
 
 ///////////////////////////////////////////////////////////////////////////////
 // WASM API
@@ -64,17 +64,18 @@ export function resampleWASM(
 	if (!(output instanceof Float32Array)) throw new Error('Missing Float32Array output.');
 	const outputSize = output.length / input.length;
 	if (!Number.isInteger(outputSize)) throw new Error('Invalid input/output counts.');
-	if (!Number.isFinite(interpolation)) throw new Error('Invalid interpolation.');
+	if (!(interpolation in TO_INTERPOLATION_INTERNAL)) throw new Error('Invalid interpolation.');
 	if (!Number.isFinite(tolerance)) throw new Error('Invalid tolerance.');
 
 	const inputPtr = __retain(__lowerStaticArray(input, 4, 2));
 	const outputPtr = __retain(__lowerStaticArray(output, 4, 2));
 	const normalizedVal = normalized ? 1 : 0;
+	const interpolationVal = TO_INTERPOLATION_INTERNAL[interpolation];
 
 	try {
 		exports.__setArgumentsLength(arguments.length);
 		const count =
-			exports.resample(inputPtr, outputPtr, interpolation, tolerance, normalizedVal) >>> 0;
+			exports.resample(inputPtr, outputPtr, interpolationVal, tolerance, normalizedVal) >>> 0;
 		__liftStaticArray(inputPtr, input, count);
 		__liftStaticArray(outputPtr, output, count * outputSize);
 		return count;

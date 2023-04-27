@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Interpolation, ready, resample, resampleWASM } from 'keyframe-resample';
+import { ready, resample, resampleWASM } from 'keyframe-resample';
 
 const round = (value: number) => Math.round(value * 1e6) / 1e6;
 
@@ -16,7 +16,7 @@ test('resample - js', async (t) => {
 	const srcTimes = new Float32Array([0, 0.1, 0.2, 0.3, 0.4]);
 	const srcValues = new Float32Array([0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5]);
 
-	const count = resample(srcTimes, srcValues, Interpolation.LERP);
+	const count = resample(srcTimes, srcValues, 'lerp');
 
 	const dstTimes = Array.from(srcTimes.slice(0, count)).map(round);
 	const dstValues = Array.from(srcValues.slice(0, count * 3)).map(round);
@@ -32,7 +32,7 @@ test('resample - wasm', async (t) => {
 	const srcTimes = new Float32Array([0, 0.1, 0.2, 0.3, 0.4]);
 	const srcValues = new Float32Array([0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5]);
 
-	const count = resampleWASM(srcTimes, srcValues, Interpolation.LERP);
+	const count = resampleWASM(srcTimes, srcValues, 'lerp');
 
 	const dstTimes = Array.from(srcTimes.slice(0, count)).map(round);
 	const dstValues = Array.from(srcValues.slice(0, count * 3)).map(round);
