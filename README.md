@@ -26,11 +26,15 @@ npm install --save keyframe-resample
 ## API
 
 ```javascript
-import { resample, ready, Interpolation } from 'keyframe-resample';
+import { ready, resample, resampleWASM } from 'keyframe-resample';
 
+// wait for WASM to compile
 await ready;
 
+// keyframe times, in seconds
 const srcTimes = new Float32Array([0, 0.1, 0.2, 0.3, 0.4]);
+
+// keyframe values, N-dimensional vectors
 const srcValues = new Float32Array([
     0, 0, 1,
     0, 0, 2,
@@ -39,8 +43,11 @@ const srcValues = new Float32Array([
     0, 0, 5,
 ]);
 
-const count = resample(srcTimes, srcValues, 'lerp');
+// resample keyframes, remove those unnecessary with interpolation.
+const count = resample(srcTimes, srcValues, 'lerp');     // slower
+const count = resampleWASM(srcTimes, srcValues, 'lerp'); // faster
 
+// results are written to start of source array.
 const dstTimes = srcTimes.slice(0, count); // → [0, 0.4]
 const dstValues = srcValues.slice(0, count * 3); // → [0, 0, 1, 0, 0, 5]
 ```
