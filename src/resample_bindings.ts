@@ -59,13 +59,15 @@ export function resampleWASM(
 	tolerance = 1e4,
 	normalized = false
 ): number {
-	if (!exports) throw new Error('Module not initialized; await the "ready" export.');
-	if (!(input instanceof Float32Array)) throw new Error('Missing Float32Array input.');
-	if (!(output instanceof Float32Array)) throw new Error('Missing Float32Array output.');
+	__assert(!!exports, 'Await "ready" before using module.');
+	__assert(input instanceof Float32Array, 'Missing Float32Array input.');
+	__assert(output instanceof Float32Array, 'Missing Float32Array output.');
+
 	const outputSize = output.length / input.length;
-	if (!Number.isInteger(outputSize)) throw new Error('Invalid input/output counts.');
-	if (!(interpolation in TO_INTERPOLATION_INTERNAL)) throw new Error('Invalid interpolation.');
-	if (!Number.isFinite(tolerance)) throw new Error('Invalid tolerance.');
+
+	__assert(Number.isInteger(outputSize), 'Invalid input/output counts.');
+	__assert(interpolation in TO_INTERPOLATION_INTERNAL, 'Invalid interpolation.');
+	__assert(Number.isFinite(tolerance), 'Invalid tolerance');
 
 	const inputPtr = __retain(__lowerStaticArray(input, 4, 2));
 	const outputPtr = __retain(__lowerStaticArray(output, 4, 2));
@@ -90,6 +92,10 @@ export function resampleWASM(
 ///////////////////////////////////////////////////////////////////////////////
 // INTERNAL
 ///////////////////////////////////////////////////////////////////////////////
+
+function __assert(cond: boolean, msg: string) {
+	if (!cond) throw new Error(msg);
+}
 
 function __retain(ptr: number): number {
 	exports.__pin(ptr);
