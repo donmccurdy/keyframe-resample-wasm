@@ -7,6 +7,7 @@ Resamples and optimizes keyframe data using WebAssembly.
 To do:
 
 - [ ] Support streaming API with fixed memory.
+- [ ] Support normalized and integer accessors.
 
 AssemblyScript / WASM findings:
 

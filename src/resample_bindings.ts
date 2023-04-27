@@ -5,7 +5,7 @@ import { Interpolation, TO_INTERPOLATION_INTERNAL } from './constants.js';
 // WASM API
 ///////////////////////////////////////////////////////////////////////////////
 
-interface Instance {
+interface Instance extends WebAssembly.WebAssemblyInstantiatedSource {
 	exports: InstanceExports;
 }
 
@@ -44,7 +44,7 @@ export const ready = new Promise<void>(async (resolve, reject) => {
 async function instantiate(module: BufferSource, imports = {}): Promise<InstanceExports> {
 	const instance = (await WebAssembly.instantiate(module, {
 		env: Object.assign(Object.create(globalThis), {}, { abort: __abort }),
-	})) as unknown as Instance;
+	})) as Instance;
 	return instance.exports;
 }
 
