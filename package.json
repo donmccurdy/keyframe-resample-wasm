@@ -7,10 +7,17 @@
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "main": "./dist/keyframe-resample-node.cjs",
-  "module": "./dist/keyframe-resample-node.esm.js",
+  "module": "./dist/keyframe-resample-browser.modern.js",
   "exports": {
-    "require": "./dist/keyframe-resample-node.cjs",
-    "default": "./dist/keyframe-resample-node.modern.js"
+    "types": "./dist/index.d.ts",
+    "node": {
+      "require": "./dist/keyframe-resample-node.cjs",
+      "default": "./dist/keyframe-resample-node.modern.js"
+    },
+    "default": {
+      "require": "./dist/keyframe-resample-browser.cjs",
+      "default": "./dist/keyframe-resample-browser.modern.js"
+    }
   },
   "repository": "github:donmccurdy/keyframe-resample-wasm",
   "author": "Don McCurdy <dm@donmccurdy.com>",
@@ -19,7 +26,7 @@
     "dist": "yarn asbuild && yarn build",
     "build": "yarn build:node && yarn build:browser",
     "build:node": "microbundle build --raw --no-compress --target node --format modern,cjs src/index.ts --output dist/keyframe-resample-node.js --external node:fs/promises",
-    "build:browser": "microbundle build --raw --no-compress --target web --format modern,cjs src/index.ts --output dist/keyframe-resample-browser.js --alias resample_wasm.ts=./resample_wasm.bundler.ts",
+    "build:browser": "microbundle build --raw --no-compress --target web --format modern,cjs src/index.ts --output dist/keyframe-resample-browser.js --external ./release.wasm --alias ./resample_wasm.js=./resample_wasm.bundler.js",
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "asbuild:debug": "asc assembly/index.ts --target debug",
     "asbuild:release": "asc assembly/index.ts --target release",
