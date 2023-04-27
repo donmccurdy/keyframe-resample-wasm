@@ -1,5 +1,8 @@
 # keyframe-resample-wasm
 
+[![Latest NPM release](https://img.shields.io/npm/v/keyframe-resample.svg)](https://www.npmjs.com/package/keyframe-resample)
+[![Build Status](https://github.com/donmccurdy/keyframe-resample-wasm/workflows/CI/badge.svg?branch=main&event=push)](https://github.com/donmccurdy/keyframe-resample-wasm/actions?query=workflow%3ACI)
+
 Resamples and optimizes keyframe data using WebAssembly.
 
 > **IMPORTANT:** This project is experimental and a work in progress.
