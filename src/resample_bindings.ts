@@ -10,7 +10,7 @@ interface Instance {
 }
 
 interface InstanceExports {
-	memory: Uint8Array;
+	memory: WebAssembly.Memory;
 	resample: (
 		input: number,
 		output: number,
@@ -83,6 +83,7 @@ export function resampleWASM(
 		__release(inputPtr);
 		__release(outputPtr);
 		exports.__collect();
+		// console.log(`Memory: ${exports.memory.buffer.byteLength} bytes`);
 	}
 }
 
