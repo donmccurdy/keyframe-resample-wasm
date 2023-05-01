@@ -52,6 +52,17 @@ async function instantiate(module: BufferSource, imports = {}): Promise<Instance
 // PUBLIC API
 ///////////////////////////////////////////////////////////////////////////////
 
+const CHUNK_SIZE = 1024;
+
+// The first and last keyframes cannot be removed in any given step, but we need to
+// somehow remove keyframes on chunk boundaries. So after processing each chunk,
+// we copy its last two keyframes in front of the next chunk, and run from there.
+//
+// 🟩 ⬜️ ⬜️ ⬜️ ⬜️ ⬜️                  // chunk 1, original
+// 🟩 ⬜️ 🟨 🟥                       // chunk 1, resampled
+//            🟨 🟥 🟩 ⬜️ ⬜️ ⬜️       // chunk 2, original
+//            🟨 🟩 ⬜️ ⬜️            // chunk 2, resampled
+// ...
 export function resampleWASM(
 	input: Float32Array,
 	output: Float32Array,
@@ -69,24 +80,58 @@ export function resampleWASM(
 	__assert(interpolation in TO_INTERPOLATION_INTERNAL, 'Invalid interpolation.');
 	__assert(Number.isFinite(tolerance), 'Invalid tolerance');
 
-	const inputPtr = __retain(__lowerStaticArray(input, 4, 2));
-	const outputPtr = __retain(__lowerStaticArray(output, 4, 2));
-	const normalizedVal = normalized ? 1 : 0;
-	const interpolationVal = TO_INTERPOLATION_INTERNAL[interpolation];
+	const normVal = normalized ? 1 : 0;
+	const interpVal = TO_INTERPOLATION_INTERNAL[interpolation];
+	const srcCount = input.length;
+	let dstCount = 0;
 
-	try {
-		exports.__setArgumentsLength(arguments.length);
-		const count =
-			exports.resample(inputPtr, outputPtr, interpolationVal, tolerance, normalizedVal) >>> 0;
-		__liftStaticArray(inputPtr, input, count);
-		__liftStaticArray(outputPtr, output, count * outputSize);
-		return count;
-	} finally {
-		__release(inputPtr);
-		__release(outputPtr);
-		exports.__collect();
-		// console.log(`Memory: ${exports.memory.buffer.byteLength} bytes`);
+	for (let chunkStart = 0; chunkStart < input.length; chunkStart += CHUNK_SIZE) {
+		const chunkCount = Math.min(srcCount - chunkStart, CHUNK_SIZE);
+
+		// Allocate a two-keyframe prefix for all chunks after the first.
+		const prefixCount = chunkStart > 0 ? 2 : 0;
+		const chunkInput = new Float32Array(
+			input.buffer,
+			input.byteOffset + (chunkStart - prefixCount) * Float32Array.BYTES_PER_ELEMENT,
+			chunkCount + prefixCount
+		);
+		const chunkOutput = new Float32Array(
+			output.buffer,
+			output.byteOffset +
+				(chunkStart - prefixCount) * outputSize * Float32Array.BYTES_PER_ELEMENT,
+			(chunkCount + prefixCount) * outputSize
+		);
+
+		// Copy prefix to start of next chunk.
+		if (prefixCount > 0) {
+			input.copyWithin(chunkStart - prefixCount, dstCount - prefixCount, dstCount);
+			output.copyWithin(
+				(chunkStart - prefixCount) * outputSize,
+				(dstCount - prefixCount) * outputSize,
+				dstCount * outputSize
+			);
+		}
+
+		const inputPtr = __retain(__lowerStaticArray(chunkInput, 4, 2));
+		const outputPtr = __retain(__lowerStaticArray(chunkOutput, 4, 2));
+		try {
+			exports.__setArgumentsLength(5);
+			const count =
+				exports.resample(inputPtr, outputPtr, interpVal, tolerance, normVal) >>> 0;
+			dstCount -= prefixCount;
+			__liftStaticArray(inputPtr, input, dstCount, count);
+			__liftStaticArray(outputPtr, output, dstCount * outputSize, count * outputSize);
+			dstCount += count;
+		} finally {
+			__release(inputPtr);
+			__release(outputPtr);
+			exports.__collect();
+		}
 	}
+
+	// console.log(`Memory: ${exports.memory.buffer.byteLength} bytes`);
+
+	return dstCount;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -125,8 +170,8 @@ function __lowerStaticArray(values: Float32Array, id: number, align: number) {
 	return ptr;
 }
 
-function __liftStaticArray(ptr: number, values: Float32Array, count: number) {
-	values.set(new Float32Array(exports.memory.buffer, ptr, count));
+function __liftStaticArray(ptr: number, values: Float32Array, offset: number, count: number) {
+	values.set(new Float32Array(exports.memory.buffer, ptr, count), offset);
 }
 
 function __abort(
