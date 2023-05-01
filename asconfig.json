@@ -19,6 +19,7 @@
   "options": {
     "bindings": "esm",
     "runtime": "minimal",
-    "exportRuntime": true
+    "exportRuntime": true,
+    "uncheckedBehavior": "always"
   }
 }
