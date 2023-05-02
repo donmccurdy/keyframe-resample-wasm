@@ -8,8 +8,7 @@ export function resample(
 	input: Float32Array,
 	output: Float32Array,
 	interpolation: Interpolation,
-	tolerance = 1e4,
-	normalized = false
+	tolerance = 1e-4
 ): number {
 	const elementSize = output.length / input.length;
 	const tmp = new Array<number>(elementSize).fill(0);
@@ -30,9 +29,9 @@ export function resample(
 
 		// Remove unnecessary adjacent keyframes.
 		if (time !== timeNext && (i !== 1 || time !== input[0])) {
-			getElement(output, writeIndex - 1, valuePrev, normalized);
-			getElement(output, i, value, normalized);
-			getElement(output, i + 1, valueNext, normalized);
+			getElement(output, writeIndex - 1, valuePrev);
+			getElement(output, i, value);
+			getElement(output, i + 1, valueNext);
 
 			if (interpolation === 'slerp') {
 				// Prune keyframes colinear with prev/next keyframes.
@@ -60,7 +59,7 @@ export function resample(
 		if (keep) {
 			if (i !== writeIndex) {
 				input[writeIndex] = input[i];
-				setElement(output, writeIndex, getElement(output, i, tmp, normalized), normalized);
+				setElement(output, writeIndex, getElement(output, i, tmp));
 			}
 			writeIndex++;
 		}
@@ -69,7 +68,7 @@ export function resample(
 	// Flush last keyframe (compaction looks ahead).
 	if (lastIndex > 0) {
 		input[writeIndex] = input[lastIndex];
-		setElement(output, writeIndex, getElement(output, lastIndex, tmp, normalized), normalized);
+		setElement(output, writeIndex, getElement(output, lastIndex, tmp));
 		writeIndex++;
 	}
 
@@ -78,30 +77,14 @@ export function resample(
 
 /* Utilities */
 
-function getElement(
-	array: Float32Array,
-	index: number,
-	target: number[],
-	normalized: boolean
-): number[] {
-	// if (normalized) {
-	// 	throw new Error('Normalization not supported.');
-	// }
+function getElement(array: Float32Array, index: number, target: number[]): number[] {
 	for (let i = 0, elementSize = target.length; i < elementSize; i++) {
 		target[i] = array[index * elementSize + i];
 	}
 	return target;
 }
 
-function setElement(
-	array: Float32Array,
-	index: number,
-	value: number[],
-	normalized: boolean
-): void {
-	// if (normalized) {
-	// 	throw new Error('Normalization not supported.');
-	// }
+function setElement(array: Float32Array, index: number, value: number[]): void {
 	for (let i = 0, elementSize = value.length; i < elementSize; i++) {
 		array[index * elementSize + i] = value[i];
 	}

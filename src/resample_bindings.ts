@@ -11,13 +11,7 @@ interface Instance extends WebAssembly.WebAssemblyInstantiatedSource {
 
 interface InstanceExports {
 	memory: WebAssembly.Memory;
-	resample: (
-		input: number,
-		output: number,
-		interpolation: number,
-		tolerance: number,
-		normalized: number
-	) => number;
+	resample: (input: number, output: number, interpolation: number, tolerance: number) => number;
 	__setArgumentsLength: (length: number) => void;
 	__new: (byteLength: number, id: number) => number;
 	__pin: (ptr: number) => number;
@@ -67,8 +61,7 @@ export function resampleWASM(
 	input: Float32Array,
 	output: Float32Array,
 	interpolation: Interpolation,
-	tolerance = 1e4,
-	normalized = false
+	tolerance = 1e-4
 ): number {
 	__assert(!!exports, 'Await "ready" before using module.');
 	__assert(input instanceof Float32Array, 'Missing Float32Array input.');
@@ -80,7 +73,6 @@ export function resampleWASM(
 	__assert(interpolation in TO_INTERPOLATION_INTERNAL, 'Invalid interpolation.');
 	__assert(Number.isFinite(tolerance), 'Invalid tolerance');
 
-	const normVal = normalized ? 1 : 0;
 	const interpVal = TO_INTERPOLATION_INTERNAL[interpolation];
 	const srcCount = input.length;
 	let dstCount = 0;
@@ -115,9 +107,8 @@ export function resampleWASM(
 		const inputPtr = __retain(__lowerStaticArray(chunkInput, 4, 2));
 		const outputPtr = __retain(__lowerStaticArray(chunkOutput, 4, 2));
 		try {
-			exports.__setArgumentsLength(5);
-			const count =
-				exports.resample(inputPtr, outputPtr, interpVal, tolerance, normVal) >>> 0;
+			exports.__setArgumentsLength(4);
+			const count = exports.resample(inputPtr, outputPtr, interpVal, tolerance) >>> 0;
 			dstCount -= prefixCount;
 			__liftStaticArray(inputPtr, input, dstCount, count);
 			__liftStaticArray(outputPtr, output, dstCount * outputSize, count * outputSize);

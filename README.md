@@ -7,10 +7,6 @@ Resamples and optimizes keyframe data using WebAssembly.
 
 > **IMPORTANT:** This project is experimental and a work in progress.
 
-To do:
-
-- [ ] Support normalized and integer accessors.
-
 AssemblyScript / WASM findings:
 
 - Prefer StaticArray

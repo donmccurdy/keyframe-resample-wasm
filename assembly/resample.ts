@@ -17,8 +17,7 @@ export function resample(
 	input: StaticArray<f32>,
 	output: StaticArray<f32>,
 	interpolation: Interpolation,
-	tolerance: f32 = 1e4,
-	normalized: boolean = false
+	tolerance: f32 = 1e-4
 ): u32 {
 	const elementSize: u32 = output.length / input.length;
 	const tmp = new StaticArray<f32>(elementSize);
@@ -39,9 +38,9 @@ export function resample(
 
 		// Remove unnecessary adjacent keyframes.
 		if (time !== timeNext && (i !== 1 || time !== input[0])) {
-			getElement(output, writeIndex - 1, valuePrev, normalized);
-			getElement(output, i, value, normalized);
-			getElement(output, i + 1, valueNext, normalized);
+			getElement(output, writeIndex - 1, valuePrev);
+			getElement(output, i, value);
+			getElement(output, i + 1, valueNext);
 
 			if (interpolation === Interpolation.SLERP) {
 				// Prune keyframes colinear with prev/next keyframes.
@@ -64,7 +63,7 @@ export function resample(
 		if (keep) {
 			if (i !== writeIndex) {
 				input[writeIndex] = input[i];
-				setElement(output, writeIndex, getElement(output, i, tmp, normalized), normalized);
+				setElement(output, writeIndex, getElement(output, i, tmp));
 			}
 			writeIndex++;
 		}
@@ -73,7 +72,7 @@ export function resample(
 	// Flush last keyframe (compaction looks ahead).
 	if (lastIndex > 0) {
 		input[writeIndex] = input[lastIndex];
-		setElement(output, writeIndex, getElement(output, lastIndex, tmp, normalized), normalized);
+		setElement(output, writeIndex, getElement(output, lastIndex, tmp));
 		writeIndex++;
 	}
 
@@ -85,27 +84,15 @@ export function resample(
 function getElement(
 	array: StaticArray<f32>,
 	index: u32,
-	target: StaticArray<f32>,
-	normalized: boolean
+	target: StaticArray<f32>
 ): StaticArray<f32> {
-	// if (normalized) {
-	// 	throw new Error('Normalization not supported.');
-	// }
 	for (let i: u32 = 0, elementSize: u32 = target.length; i < elementSize; i++) {
 		target[i] = array[index * elementSize + i];
 	}
 	return target;
 }
 
-function setElement(
-	array: StaticArray<f32>,
-	index: u32,
-	value: StaticArray<f32>,
-	normalized: boolean
-): void {
-	// if (normalized) {
-	// 	throw new Error('Normalization not supported.');
-	// }
+function setElement(array: StaticArray<f32>, index: u32, value: StaticArray<f32>): void {
 	for (let i: u32 = 0, elementSize: u32 = value.length; i < elementSize; i++) {
 		array[index * elementSize + i] = value[i];
 	}
