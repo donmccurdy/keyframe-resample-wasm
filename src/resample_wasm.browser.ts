@@ -1,3 +1,3 @@
 /** WASM loader for Web environments. */
-const wasm = import(new URL('release.wasm', import.meta.url).href);
+const wasm = fetch(new URL('../dist/release.wasm', import.meta.url));
 export default wasm;
