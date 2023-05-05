@@ -11,6 +11,7 @@
   "exports": {
     "types": "./dist/index.d.ts",
     "compat": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/keyframe-resample-compat.cjs",
       "default": "./dist/keyframe-resample-compat.modern.js"
     },
