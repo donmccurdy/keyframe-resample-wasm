@@ -3,12 +3,12 @@
 		"paths": {
 			"keyframe-resample": ["./"]
 		},
+		"typeRoots": ["node_modules/@types"],
 		"moduleResolution": "node",
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
 		"target": "ESNext",
 		"declaration": true,
-		"typeRoots": ["node_modules/@types"],
 		"strict": true
 	},
 }
