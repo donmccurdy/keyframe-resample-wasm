@@ -57,6 +57,14 @@ const dstValues = srcValues.slice(0, count * 3); // → [0, 0, 1, 0, 0, 5]
 
 In addition to the `resample(...)` function implemented in WebAssembly, a `resampleDebug(...)` function implemented in plain JavaScript is also exported. The WebAssembly implementation runs considerably faster.
 
+### Exports
+
+| export                                                                                | description                                                             |
+|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| `'ready'`                                                                             | Promise resolving when WASM is initialized and module is ready for use. |
+| `'resample(times: Float32Array, values: Float32Array, interp, tolerance = 1e4)'`      | WebAssembly implementation of keyframe interpolation.                   |
+| `'resampleDebug(times: Float32Array, values: Float32Array, interp, tolerance = 1e4)'` | JavaScript implementation of keyframe interpolation.                    |
+
 ### Interpolation modes
 
 | mode      | description                                                 |
