@@ -25,7 +25,7 @@ interface InstanceExports {
 
 let exports: InstanceExports;
 
-export const ready = new Promise<void>(async (resolve, reject) => {
+export const ready = /* #__PURE__ */ new Promise<void>(async (resolve, reject) => {
 	try {
 		const module = await WebAssembly.compile(await wasm);
 		exports = await instantiate(module as BufferSource, {});
