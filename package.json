@@ -9,17 +9,18 @@
   "main": "./dist/keyframe-resample-node.cjs",
   "module": "./dist/keyframe-resample-browser.modern.js",
   "exports": {
-    "types": "./dist/index.d.ts",
     "compat": {
       "types": "./dist/index.d.ts",
       "require": "./dist/keyframe-resample-compat.cjs",
       "default": "./dist/keyframe-resample-compat.modern.js"
     },
     "node": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/keyframe-resample-node.cjs",
       "default": "./dist/keyframe-resample-node.modern.js"
     },
     "default": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/keyframe-resample-browser.cjs",
       "default": "./dist/keyframe-resample-browser.modern.js"
     }
