@@ -7,14 +7,6 @@ Resamples and optimizes keyframe data using WebAssembly. Minzipped size is about
 
 > **IMPORTANT:** This project is experimental and a work in progress.
 
-AssemblyScript / WASM findings:
-
-- Prefer StaticArray
-- Use unchecked array read/write (180 MB/s → 680 MB/s)
-- Any size optimization can have a performance cost, measure it
-- Default bindings are not npm-ready, may need to hand-write
-- Incremental GC has some overhead, measure it
-
 ## Installation
 
 ```
