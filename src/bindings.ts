@@ -1,4 +1,4 @@
-import wasm from './resample_wasm.env.js';
+import wasm from './wasm.env.js';
 import { Interpolation, TO_INTERPOLATION_INTERNAL } from './constants.js';
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ const CHUNK_SIZE = 1024;
 //            🟨 🟥 🟩 ⬜️ ⬜️ ⬜️       // chunk 2, original
 //            🟨 🟩 ⬜️ ⬜️            // chunk 2, resampled
 // ...
-export function resampleWASM(
+export function resample(
 	input: Float32Array,
 	output: Float32Array,
 	interpolation: Interpolation,

@@ -29,9 +29,9 @@
   "scripts": {
     "dist": "yarn asbuild && yarn build",
     "build": "yarn build:node && yarn build:browser && yarn build:compat",
-    "build:node": "microbundle build --target node --format modern,cjs --raw --no-compress --no-sourcemap --output dist/keyframe-resample-node.js --external node:fs/promises --alias ./resample_wasm.env.js=./resample_wasm.node.js",
-    "build:browser": "microbundle build --target web --format modern,cjs --raw --no-compress --output dist/keyframe-resample-browser.js --external ./release.wasm --alias ./resample_wasm.env.js=./resample_wasm.browser.js",
-    "build:compat": "microbundle build --target web --format modern,cjs --raw --no-compress --no-sourcemap --output dist/keyframe-resample-compat.js --external ./release.wasm --alias ./resample_wasm.env.js=./resample_wasm.compat.js --define WASM_BASE64=`base64 -i dist/release.wasm`",
+    "build:node": "microbundle build --target node --format modern,cjs --raw --no-compress --no-sourcemap --output dist/keyframe-resample-node.js --external node:fs/promises --alias ./wasm.env.js=./wasm.node.js",
+    "build:browser": "microbundle build --target web --format modern,cjs --raw --no-compress --output dist/keyframe-resample-browser.js --external ./release.wasm --alias ./wasm.env.js=./wasm.browser.js",
+    "build:compat": "microbundle build --target web --format modern,cjs --raw --no-compress --no-sourcemap --output dist/keyframe-resample-compat.js --external ./release.wasm --alias ./wasm.env.js=./wasm.compat.js --define WASM_BASE64=`base64 -i dist/release.wasm`",
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "asbuild:debug": "asc assembly/resample.ts --target debug",
     "asbuild:release": "asc assembly/resample.ts --target release",
@@ -55,8 +55,11 @@
     "typescript": "5.0.4"
   },
   "files": [
-    "dist/",
     "src/",
+    "assembly/",
+    "dist/",
+    "!dist/debug*",
+    "!dist/*.map",
     "README.md",
     "LICENSE",
     "package.json"

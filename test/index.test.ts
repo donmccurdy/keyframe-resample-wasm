@@ -1,22 +1,22 @@
 import test from 'ava';
-import { ready, resample, resampleWASM } from 'keyframe-resample';
+import { ready, resample, resampleDebug } from 'keyframe-resample';
 
 const round = (value: number) => Math.round(value * 1e6) / 1e6;
 
-test('init - js', async (t) => {
-	t.is(!!resample, true, 'js build exists');
+test('init - debug', async (t) => {
+	t.is(!!resampleDebug, true, 'js build exists');
 });
 
 test('init - wasm', async (t) => {
 	await ready;
-	t.is(!!resampleWASM, true, 'wasm build exists');
+	t.is(!!resample, true, 'wasm build exists');
 });
 
-test('resample - js', async (t) => {
+test('resample - debug', async (t) => {
 	const srcTimes = new Float32Array([0, 0.1, 0.2, 0.3, 0.4]);
 	const srcValues = new Float32Array([0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5]);
 
-	const count = resample(srcTimes, srcValues, 'lerp');
+	const count = resampleDebug(srcTimes, srcValues, 'lerp');
 
 	const dstTimes = Array.from(srcTimes.slice(0, count)).map(round);
 	const dstValues = Array.from(srcValues.slice(0, count * 3)).map(round);
@@ -32,7 +32,7 @@ test('resample - wasm', async (t) => {
 	const srcTimes = new Float32Array([0, 0.1, 0.2, 0.3, 0.4]);
 	const srcValues = new Float32Array([0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5]);
 
-	const count = resampleWASM(srcTimes, srcValues, 'lerp');
+	const count = resample(srcTimes, srcValues, 'lerp');
 
 	const dstTimes = Array.from(srcTimes.slice(0, count)).map(round);
 	const dstValues = Array.from(srcValues.slice(0, count * 3)).map(round);

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { resample, resampleWASM } from 'keyframe-resample';
+import { resample, resampleDebug } from 'keyframe-resample';
 import { performance } from 'node:perf_hooks';
 
 /******************************************************************************
@@ -49,8 +49,8 @@ async function run(label: string, resample: Function) {
 	console.log('\n');
 }
 
-await run('\nJavaScript', resample);
-await run('WASM', resampleWASM);
+await run('\nJavaScript', resampleDebug);
+await run('WASM', resample);
 
 /******************************************************************************
  * Utilities

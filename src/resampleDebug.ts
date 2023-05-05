@@ -4,7 +4,7 @@ type quat = [number, number, number, number];
 
 /* Implementation */
 
-export function resample(
+export function resampleDebug(
 	input: Float32Array,
 	output: Float32Array,
 	interpolation: Interpolation,
