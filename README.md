@@ -53,9 +53,9 @@ In addition to the `resample(...)` function implemented in WebAssembly, a `resam
 
 | export                                                                              | description                                                             |
 |-------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| `ready`                                                                             | Promise resolving when WASM is initialized and module is ready for use. |
-| `resample(times: Float32Array, values: Float32Array, interp, tolerance = 1e4)`      | WebAssembly implementation of keyframe interpolation.                   |
-| `resampleDebug(times: Float32Array, values: Float32Array, interp, tolerance = 1e4)` | JavaScript implementation of keyframe interpolation.                    |
+| `ready: Promise<void>`                                                                             | Promise resolving when WASM is initialized and module is ready for use. |
+| <pre>resample(<br>&emsp;times: Float32Array,<br>&emsp;values: Float32Array,<br>&emsp;interp: 'step' \| 'lerp' \| 'slerp',<br>&emsp;tolerance = 1e4<br>)</pre> | WebAssembly implementation of keyframe interpolation.                   |
+| <pre>resampleDebug(<br>&emsp;times: Float32Array,<br>&emsp;values: Float32Array,<br>&emsp;interp: 'step' \| 'lerp' \| 'slerp',<br>&emsp;tolerance = 1e4<br>)</pre> | JavaScript implementation of keyframe interpolation.                   |
 
 ### Interpolation modes
 
