@@ -1,6 +1,6 @@
 {
   "name": "keyframe-resample",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Resamples and optimizes keyframe data using WebAssembly",
   "type": "module",
   "sideEffects": false,
