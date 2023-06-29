@@ -1,4 +1,4 @@
-import { Interpolation, EPSILON } from './constants';
+import { Interpolation, EPSILON } from './constants.js';
 
 type quat = [number, number, number, number];
 
