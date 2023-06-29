@@ -4,7 +4,7 @@
 			"keyframe-resample": ["./"]
 		},
 		"typeRoots": ["node_modules/@types"],
-		"moduleResolution": "node",
+		"moduleResolution": "nodenext",
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
 		"target": "ESNext",
