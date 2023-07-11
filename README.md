@@ -5,8 +5,6 @@
 
 Resamples and optimizes keyframe data using WebAssembly. Minzipped size is about 6-7 kb.
 
-> **IMPORTANT:** This project is experimental and a work in progress.
-
 ## Installation
 
 ```
