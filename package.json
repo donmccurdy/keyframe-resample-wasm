@@ -38,8 +38,8 @@
     "asbuild:debug": "asc assembly/resample.ts --target debug",
     "asbuild:release": "asc assembly/resample.ts --target release",
     "clean": "rimraf dist/*",
-    "test": "ava test/*.ts",
-    "benchmark": "node --loader=ts-node/esm benchmark/benchmark.ts",
+    "test": "ava --no-worker-threads test/*.ts",
+    "benchmark": "tsx benchmark/benchmark.ts",
     "preversion": "yarn dist && yarn test",
     "version": "rimraf dist/* && yarn dist && git add -u",
     "postversion": "git push && git push --tags && npm publish"
@@ -53,7 +53,7 @@
     "microbundle": "0.15.1",
     "prettier": "2.8.8",
     "rimraf": "5.0.0",
-    "ts-node": "10.9.1",
+    "tsx": "^4.7.0",
     "typescript": "5.0.4"
   },
   "files": [
@@ -76,7 +76,7 @@
       "ts": "module"
     },
     "nodeArguments": [
-      "--loader=ts-node/esm"
+      "--import=tsx"
     ]
   },
   "dependencies": {}
