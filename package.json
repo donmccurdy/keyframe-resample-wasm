@@ -63,7 +63,7 @@
     "!dist/debug*",
     "!dist/*.map",
     "README.md",
-    "LICENSE",
+    "LICENSE.md",
     "package.json"
   ],
   "browserslist": [
