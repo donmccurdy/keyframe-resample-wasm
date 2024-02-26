@@ -27,7 +27,7 @@
   },
   "repository": "github:donmccurdy/keyframe-resample-wasm",
   "author": "Don McCurdy <dm@donmccurdy.com>",
-  "license": "MIT",
+  "license": "BlueOak-1.0.0",
   "scripts": {
     "dist": "yarn asbuild && yarn build",
     "build": "yarn build:node && yarn build:browser && yarn build:compat",

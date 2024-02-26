@@ -87,4 +87,4 @@ feature additions.
 
 ## License
 
-Copyright 2023, MIT License.
+Licensed under [Blue Oak Model License 1.0.0](./LICENSE.md).
